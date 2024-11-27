@@ -60,7 +60,8 @@ dependencies {
 //    implementation(libs.google.firebase.auth.ktx)
 
     //foto lokal
-    implementation (libs.coil.compose)
+    implementation(libs.coil.compose.v210)
+
 
 
 

@@ -3,6 +3,7 @@ accompanistSwiperefresh = "0.24.9-beta"
 accompanistSwiperefreshVersion = "0.24.13-rc"
 agp = "8.5.2"
 coilCompose = "2.6.0"
+coilComposeVersion = "2.1.0"
 composeBomVersion = "2024.02.01"
 firebaseAuthVersion = "21.1.0"
 firebaseBom = "33.6.0"
@@ -59,6 +60,7 @@ androidx-ui-tooling-preview-v105 = { module = "androidx.compose.ui:ui-tooling-pr
 androidx-ui-tooling-v105 = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiToolingVersion" }
 androidx-ui-v105 = { module = "androidx.compose.ui:ui", version.ref = "uiVersion" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+coil-compose-v210 = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
 com-google-firebase-firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
 firebase-auth-v2110 = { module = "com.google.firebase:firebase-auth", version.ref = "firebaseAuthVersion" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }

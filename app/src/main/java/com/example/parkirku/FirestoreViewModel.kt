@@ -17,6 +17,7 @@ import kotlinx.coroutines.tasks.await
 class FirestoreViewModel : ViewModel() {
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
+
     fun updateParkingStatus(
         idCCTV: String,
         idParkir: String,

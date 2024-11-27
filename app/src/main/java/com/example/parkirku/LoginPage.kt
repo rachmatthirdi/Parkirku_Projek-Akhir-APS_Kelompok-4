@@ -2,6 +2,7 @@ package com.example.parkirku
 
 import android.content.Context
 import android.util.Patterns
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,8 +11,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -28,6 +34,13 @@ import com.google.firebase.auth.FirebaseAuth
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.composable
 
 @Composable
@@ -52,13 +65,32 @@ fun LoginPage(
     var isLoading by remember { mutableStateOf(false) }
     var isSuccess by remember { mutableStateOf(false) }
 
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        TextField(
+        Image(
+            painter = painterResource(id = R.drawable.logo_parkirku),
+            contentDescription = "Intro Image",
+            modifier = Modifier
+                .size(200.dp)
+                .padding(bottom = 16.dp)
+        )
+
+        Text("Login",
+            modifier = modifier.padding(16.dp),
+            fontSize = 23.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = FontFamily(Font(R.font.dm_sans_medium)),
+            color = colorResource(id = R.color.quaternary_color)
+        )
+
+        Spacer(modifier = Modifier.height(50.dp))
+        OutlinedTextField(
             value = email,
             onValueChange = {
                 email = it
@@ -70,57 +102,83 @@ fun LoginPage(
             },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth(),
-            isError = emailError != null
+            isError = emailError != null,
+            shape = RoundedCornerShape(30),
+            textStyle = TextStyle(color = Color.Black),
+            maxLines = 1,
         )
         emailError?.let { errorText ->
             Text(
                 text = errorText,
-                color = Color.Red,
-                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                modifier = Modifier.padding(start = 5.dp, top = 2.dp),
+                fontSize = 12.sp,
+                maxLines = 1
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
-        TextField(
+        OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             label = { Text("Password") },
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
-            isError = passwordError != null
+            isError = passwordError != null,
+            shape = RoundedCornerShape(30),
+            textStyle = TextStyle(color = Color.Black),
+            maxLines = 1
         )
         passwordError?.let { errorText ->
             Text(
                 text = errorText,
-                color = Color.Red,
-                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                modifier = Modifier.padding(start = 5.dp, top = 2.dp),
+                fontSize = 12.sp,
+                maxLines = 1
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             "belum punya akun?",
-            color = Color.Blue,
-            modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+            modifier = Modifier
+                .padding(start = 16.dp, top = 4.dp)
+
                 .clickable {
                     navController.navigate("RegisterPage")
-                }
+                },
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
+            fontFamily = FontFamily(Font(R.font.dm_sans_medium)),
+            color = colorResource(id = R.color.quaternary_color),
 
         )
 
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             "Lupa Password?",
-            color = Color.Black,
-            modifier = Modifier.padding(start = 16.dp, top = 4.dp)
-                .clickable{
+            modifier = Modifier
+                .padding(start = 16.dp, top = 4.dp)
+                .clickable {
                     if (email.isNotBlank()) {
-                        viewModel.sendPasswordResetEmail(email) { success, resultMessage ->resetPasswordMessage = resultMessage } }
-                    else { resetPasswordMessage = "Please enter your email address first." }
-                }
+                        viewModel.sendPasswordResetEmail(email) { success, resultMessage ->
+                            resetPasswordMessage = resultMessage
+                        }
+                    } else {
+                        resetPasswordMessage = "Please enter your email address first."
+                    }
+                },
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
+            fontFamily = FontFamily(Font(R.font.dm_sans_medium)),
+            color = colorResource(id = R.color.quaternary_color),
 
         )
         resetPasswordMessage?.let {
-            message -> Text( text = message, color = if (message.contains("sent")) Color.Green
-        else Color.Red, modifier = Modifier.padding(start = 16.dp, top = 4.dp) ) }
+            message ->
+            Text( text = message,
+            color = if (message.contains("sent")) Color.Green else Color.Red,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
+            fontFamily = FontFamily(Font(R.font.dm_sans_medium)),
+            modifier = Modifier.padding(start = 16.dp, top = 4.dp) ) }
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
@@ -138,9 +196,15 @@ fun LoginPage(
                 }
             },
             enabled = isFormValid,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors( colorResource(id = R.color.primary_color)),
+            shape = RoundedCornerShape(30)
         ) {
-            Text("Login")
+            Text("Login",
+                color = colorResource(id = R.color.tertiary_color),
+                modifier = Modifier.padding(start = 5.dp, top = 2.dp),
+                fontSize = 15.sp
+            )
         }
         if (isLoading) {
             CircularProgressIndicator()

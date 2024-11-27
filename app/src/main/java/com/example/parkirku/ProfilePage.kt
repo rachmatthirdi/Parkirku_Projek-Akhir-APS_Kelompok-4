@@ -32,11 +32,17 @@ import kotlinx.coroutines.tasks.await
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.rememberNavController
-import com.example.parkirku.ui.theme.ParkirkuTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
-import kotlinx.coroutines.tasks.await
 
 @Composable
 fun ProfilePage(
@@ -53,15 +59,16 @@ fun ProfilePage(
     var showLogoutDialog by remember { mutableStateOf(false) }
 
     val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-
     val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
 
+    // LaunchedEffect untuk pengaturan awal
     LaunchedEffect(userId) {
-        userId?.let {
-            val document = firestore.collection("users").document(it).get().await()
+        if (userId != null) {
+            val document = firestore.collection("users").document(userId).get().await()
             photoUrl = document.getString("photoUrl") ?: sharedPreferences.getString("photo_url", "") ?: ""
             username = document.getString("name") ?: ""
             email = document.getString("email") ?: ""
+            // Save the photoUrl to SharedPreferences
             with(sharedPreferences.edit()) {
                 putString("photo_url", photoUrl)
                 apply()
@@ -75,8 +82,6 @@ fun ProfilePage(
             selectedImageUri = uri
             val photoUriString = uri.toString()
             photoUrl = photoUriString
-
-            // Simpan URI foto dalam Firestore dan SharedPreferences
             userId?.let { id ->
                 viewModel.updateUserPhotoUrl(id, photoUriString)
                 with(sharedPreferences.edit()) {
@@ -87,80 +92,170 @@ fun ProfilePage(
         }
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (photoUrl.isNotEmpty()) {
-            Image(
-                painter = rememberImagePainter(photoUrl),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .border(2.dp, Color.Gray, CircleShape)
-                    .clickable {
-                        launcher.launch(arrayOf("image/*"))
-                    }
-            )
-        } else {
-            Image(
-                painter = painterResource(id = R.drawable.default_profile),
-                contentDescription = "Default Profile Photo",
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .border(2.dp, Color.Gray, CircleShape)
-                    .clickable {
-                        launcher.launch(arrayOf("image/*"))
-                    }
-            )
+    Scaffold(
+        topBar = {
+            Box( modifier = Modifier
+                .background(colorResource(id = R.color.quaternary_color))
+                .fillMaxWidth()
+                .padding(30.dp),
+                contentAlignment = Alignment.Center ) {
+                Text( text = "Profile",
+                    fontSize = 23.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily(Font(R.font.dm_sans_medium)),
+                    color = Color.White
+                )
+            }
         }
+    ){
+        paddingValues ->
+        Box(modifier = Modifier.padding(paddingValues))
+        {
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .padding(bottom = 120.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceAround
+            ) {
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Username: $username")
-        Text(text = "Email: $email")
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            showLogoutDialog = true
-        }) {
-            Text(text = "Logout")
-        }
-    }
 
-    // Dialog untuk konfirmasi logout
-    if (showLogoutDialog) {
-        AlertDialog(
-            onDismissRequest = { showLogoutDialog = false },
-            title = { Text("Logout Confirmation") },
-            text = { Text("Are you sure you want to logout?") },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        showLogoutDialog = false
-                        viewModel.signOut(context) {
-                            // Tambahkan logika navigasi ke halaman login setelah logout
-                        }
+
+                Image(
+                    painter = if (photoUrl.isNotEmpty()) rememberImagePainter(photoUrl) else painterResource(id = R.drawable.default_profile),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(150.dp)
+                        .clip(CircleShape)
+                        .border(2.dp, Color.Gray, CircleShape)
+                        .clickable { launcher.launch(arrayOf("image/*")) }
+                )
+
+
+                Column {
+                    Text( text = "username",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = FontFamily(Font(R.font.dm_sans_medium)),
+                        color = colorResource(id = R.color.quaternary_color)
+                    )
+                    Box( modifier = Modifier
+                        .border(1.dp, Color.Black, shape = RoundedCornerShape(10.dp))
+                        .padding(8.dp)
+                        .fillMaxWidth()
+                        ,
+
+                        ) {
+                        Text( text = username,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily(Font(R.font.dm_sans_medium)),
+                            color = colorResource(id = R.color.quaternary_color)
+                        )
                     }
-                ) {
-                    Text("Yes")
+                    Spacer(modifier = Modifier.height(10.dp))
+
+
+                    Text( text = "email",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = FontFamily(Font(R.font.dm_sans_medium)),
+                        color = colorResource(id = R.color.quaternary_color),
+                        maxLines = 1
+                    )
+                    Box( modifier = Modifier
+                        .border(1.dp, Color.Black, shape = RoundedCornerShape(10.dp))
+                        .padding(8.dp)
+                        .fillMaxWidth()
+                        ,
+
+                        ) {
+                        Text( text = email,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily(Font(R.font.dm_sans_medium)),
+                            color = colorResource(id = R.color.quaternary_color),
+                            maxLines = 1
+                        )
+                    }
                 }
-            },
-            dismissButton = {
-                Button(
-                    onClick = {
-                        showLogoutDialog = false
-                    }
+
+
+                Button(onClick = { showLogoutDialog = true },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors( colorResource(id = R.color.primary_color)),
+                    shape = RoundedCornerShape(30)
                 ) {
-                    Text("No")
+                    Text( text = "Logout",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily(Font(R.font.dm_sans_medium)),
+                        color = colorResource(id = R.color.quaternary_color),
+                    )
                 }
             }
-        )
-    }
-}
 
+            if (showLogoutDialog) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.5f))
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f)
+                            .background(Color.White, shape = RoundedCornerShape(20.dp))
+                            .padding(16.dp)
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "Logout Confirmation",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = FontFamily(Font(R.font.dm_sans_medium)),
+                                color = colorResource(id = R.color.quaternary_color)
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = "Are you sure you want to logout?",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = FontFamily(Font(R.font.dm_sans_medium)),
+                                color = Color.Red
+                            )
+                            Spacer(modifier = Modifier.height(24.dp))
+                            Row {
+                                Button(colors = ButtonDefaults.buttonColors(Color.Transparent),
+                                    onClick = {
+                                        showLogoutDialog = false
+                                        viewModel.signOut(context) {
+                                        }
+                                    }
+                                ) {
+                                    Text("Yes", color = colorResource(id = R.color.quaternary_color))
+                                }
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Button(colors = ButtonDefaults.buttonColors(colorResource(id = R.color.tertiary_color)),
+                                    onClick = { showLogoutDialog = false }
+                                ) {
+                                    Text("No", color = Color.White)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+    }
+
+}
 
 
 
@@ -177,17 +272,26 @@ fun ProfilePage(
 //    var username by remember { mutableStateOf("") }
 //    var email by remember { mutableStateOf("") }
 //    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+//    var showLogoutDialog by remember { mutableStateOf(false) }
 //
 //    val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-//
 //    val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+//
+//    // Retrieve photoUrl from SharedPreferences when the Composable is first loaded
+//    LaunchedEffect(Unit) {
+//        photoUrl = sharedPreferences.getString("photo_url", "") ?: ""
+//    }
 //
 //    LaunchedEffect(userId) {
 //        userId?.let {
 //            val document = firestore.collection("users").document(it).get().await()
-//            photoUrl = document.getString("photoUrl") ?: sharedPreferences.getString("photo_url", "") ?: ""
+//            val fetchedPhotoUrl = document.getString("photoUrl") ?: ""
+//            if (fetchedPhotoUrl.isNotEmpty()) {
+//                photoUrl = fetchedPhotoUrl
+//            }
 //            username = document.getString("name") ?: ""
 //            email = document.getString("email") ?: ""
+//            // Save the photoUrl to SharedPreferences
 //            with(sharedPreferences.edit()) {
 //                putString("photo_url", photoUrl)
 //                apply()
@@ -202,7 +306,7 @@ fun ProfilePage(
 //            val photoUriString = uri.toString()
 //            photoUrl = photoUriString
 //
-//            // Simpan URI foto dalam Firestore dan SharedPreferences
+//            // Save the photoUrl to Firestore and SharedPreferences
 //            userId?.let { id ->
 //                viewModel.updateUserPhotoUrl(id, photoUriString)
 //                with(sharedPreferences.edit()) {
@@ -250,168 +354,41 @@ fun ProfilePage(
 //        Text(text = "Email: $email")
 //        Spacer(modifier = Modifier.height(16.dp))
 //        Button(onClick = {
-//            viewModel.signOut(context) {
-//                // Navigate to LoginPage and pass the photoUrl
-//
-//            }
+//            showLogoutDialog = true
 //        }) {
 //            Text(text = "Logout")
 //        }
 //    }
-//}
-
-
-//@Composable
-//fun ProfilePage(
-//    modifier: Modifier = Modifier,
-//    viewModel: AuthViewModel = viewModel(),
-//    context: Context
-//) {
-//    val user = viewModel.auth.currentUser
-//    val userId = user?.uid
-//    var photoUrl by remember { mutableStateOf("") }
-//    var username by remember { mutableStateOf("") }
-//    var email by remember { mutableStateOf("") }
-//    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 //
-//    val firestore = FirebaseFirestore.getInstance()
-//    LaunchedEffect(userId) {
-//        userId?.let {
-//            val document = firestore.collection("users").document(it).get().await()
-//            photoUrl = document.getString("photoUrl") ?: ""
-//            username = document.getString("name") ?: ""
-//            email = document.getString("email") ?: ""
-//        }
-//    }
-//
-//    // Launcher untuk membuka file picker
-//    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
-//        if (uri != null) {
-//            selectedImageUri = uri
-//            val photoUriString = uri.toString()
-//            photoUrl = photoUriString
-//
-//            // Simpan URI foto dalam Firestore
-//            userId?.let { id ->
-//                viewModel.updateUserPhotoUrl(id, photoUriString)
-//            }
-//        }
-//    }
-//
-//    Column(
-//        modifier = modifier
-//            .fillMaxSize()
-//            .padding(16.dp),
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//        if (photoUrl.isNotEmpty()) {
-//            Image(
-//                painter = rememberImagePainter(photoUrl),
-//                contentDescription = null,
-//                modifier = Modifier
-//                    .size(100.dp)
-//                    .clip(CircleShape)
-//                    .border(2.dp, Color.Gray, CircleShape)
-//                    .clickable {
-//                        launcher.launch(arrayOf("image/*"))
+//    // Dialog untuk konfirmasi logout
+//    if (showLogoutDialog) {
+//        AlertDialog(
+//            onDismissRequest = { showLogoutDialog = false },
+//            title = { Text("Logout Confirmation") },
+//            text = { Text("Are you sure you want to logout?") },
+//            confirmButton = {
+//                Button(
+//                    onClick = {
+//                        showLogoutDialog = false
+//                        viewModel.signOut(context) {
+//                            // Tambahkan logika navigasi ke halaman login setelah logout
+//                        }
 //                    }
-//            )
-//        } else {
-//            Image(
-//                painter = painterResource(id = R.drawable.default_profile),
-//                contentDescription = "Default Profile Photo",
-//                modifier = Modifier
-//                    .size(100.dp)
-//                    .clip(CircleShape)
-//                    .border(2.dp, Color.Gray, CircleShape)
-//                    .clickable {
-//                        launcher.launch(arrayOf("image/*"))
+//                ) {
+//                    Text("Yes")
+//                }
+//            },
+//            dismissButton = {
+//                Button(
+//                    onClick = {
+//                        showLogoutDialog = false
 //                    }
-//            )
-//        }
-//
-//        Spacer(modifier = Modifier.height(16.dp))
-//        Text(text = "Username: $username")
-//        Text(text = "Email: $email")
-//        Spacer(modifier = Modifier.height(16.dp))
-//        Button(onClick = {
-//            viewModel.signOut(context) {
-//            // Navigate to LoginPage and pass the photoUrl
-//
-//            }
-//        }) {
-//            Text(text = "Logout")
-//        }
-//    }
-//}
-
-
-//@Composable
-//fun ProfilePage(
-//    modifier: Modifier = Modifier,
-//    viewModel: AuthViewModel = viewModel(),
-//    context: Context
-//) {
-//    val user = viewModel.auth.currentUser
-//    val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-//    val photoPath = sharedPreferences.getString("photo_${user?.email}", "")
-//    var username by remember { mutableStateOf("") }
-//
-//    // Fetch username from Firestore when the composable is first composed
-//    LaunchedEffect(user) {
-//        if (user != null) {
-//            viewModel.getUserInfo(user.uid) { result ->
-//                result?.let {
-//                    username = it["name"] ?: ""
+//                ) {
+//                    Text("No")
 //                }
 //            }
-//        }
-//    }
-//
-//    Column(
-//        modifier = modifier
-//            .fillMaxSize()
-//            .padding(16.dp),
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        verticalArrangement = Arrangement.Center
-//    ) {
-//        // Foto profil
-//        if (!photoPath.isNullOrEmpty()) {
-//            Image(
-//                painter = rememberImagePainter(photoPath),
-//                contentDescription = "Profile Photo",
-//                modifier = Modifier
-//                    .size(100.dp)
-//                    .clip(CircleShape)
-//                    .background(Color.Gray)
-//            )
-//        } else {
-//            Image(
-//                painter = painterResource(id = R.drawable.default_profile),
-//                contentDescription = "Default Profile Photo",
-//                modifier = Modifier
-//                    .size(100.dp)
-//                    .clip(CircleShape)
-//                    .background(Color.Gray)
-//            )
-//        }
-//
-//        Spacer(modifier = Modifier.height(16.dp))
-//
-//        // Kolom username
-//        Text(text = username)
-//        Spacer(modifier = Modifier.height(8.dp))
-//
-//        // Kolom email
-//        Text(text = user?.email ?: "Email")
-//        Spacer(modifier = Modifier.height(16.dp))
-//
-//        // Tombol logout
-//        Button(onClick = {
-//            viewModel.signOut(context) {
-//            }
-//        }) {
-//            Text(text = "Logout")
-//        }
+//        )
 //    }
 //}
+
+

@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import com.google.firebase.firestore.SetOptions
+import kotlinx.coroutines.tasks.await
 
 
 class AuthViewModel : ViewModel() {
@@ -122,6 +123,7 @@ class AuthViewModel : ViewModel() {
                 }
             }
     }
+
 
     fun signOut(context: Context, onResult: () -> Unit) {
         auth.signOut()
