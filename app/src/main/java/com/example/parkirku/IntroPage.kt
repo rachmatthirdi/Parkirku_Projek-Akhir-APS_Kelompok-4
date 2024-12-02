@@ -16,7 +16,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun IntroPage(navController: NavController) {
@@ -33,7 +32,7 @@ fun IntroPage(navController: NavController) {
             verticalArrangement = Arrangement.Center
         ) {
             Image(
-                painter = painterResource(id = R.drawable.logo_parkirku), // Replace with your drawable resource
+                painter = painterResource(id = R.drawable.logo_parkirku),
                 contentDescription = "Intro Image",
                 modifier = Modifier
                     .size(200.dp)

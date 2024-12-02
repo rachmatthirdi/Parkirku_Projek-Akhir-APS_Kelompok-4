@@ -37,7 +37,7 @@ fun PanduanPage(modifier: Modifier = Modifier) {
     ) {
 
         Image(
-            painter = painterResource(id = R.drawable.parkir), // Replace with your image resource
+            painter = painterResource(id = R.drawable.parkir),
             contentDescription = "Parking Rules",
             modifier = Modifier
                 .clip(RoundedCornerShape(25.dp))
@@ -50,7 +50,7 @@ fun PanduanPage(modifier: Modifier = Modifier) {
         Text(
             text = "Aturan Parkir",
             style = MaterialTheme.typography.titleLarge.copy(
-                color = Color(0xFFFF6700), // Orange-red color
+                color = Color(0xFFFF6700),
                 fontWeight = FontWeight.Bold
             )
         )

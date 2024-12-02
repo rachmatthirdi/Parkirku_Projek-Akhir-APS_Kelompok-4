@@ -103,7 +103,6 @@ fun MainScreen() {
 
         }
     ) { innerPadding ->
-        // Gunakan innerPadding untuk konten
         val authViewModel: AuthViewModel = viewModel()
         val ParkingViewModel: FirestoreViewModel = viewModel()
         when (currentPage.value) {

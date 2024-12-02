@@ -61,7 +61,6 @@ fun ProfilePage(
     val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
 
-    // LaunchedEffect untuk pengaturan awal
     LaunchedEffect(userId) {
         if (userId != null) {
             val document = firestore.collection("users").document(userId).get().await()
@@ -76,7 +75,6 @@ fun ProfilePage(
         }
     }
 
-    // Launcher untuk membuka file picker
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
         if (uri != null) {
             selectedImageUri = uri
@@ -256,139 +254,4 @@ fun ProfilePage(
     }
 
 }
-
-
-
-
-//@Composable
-//fun ProfilePage(
-//    modifier: Modifier = Modifier,
-//    viewModel: AuthViewModel = viewModel(),
-//    context: Context
-//) {
-//    val user = viewModel.auth.currentUser
-//    val userId = user?.uid
-//    var photoUrl by remember { mutableStateOf("") }
-//    var username by remember { mutableStateOf("") }
-//    var email by remember { mutableStateOf("") }
-//    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-//    var showLogoutDialog by remember { mutableStateOf(false) }
-//
-//    val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-//    val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-//
-//    // Retrieve photoUrl from SharedPreferences when the Composable is first loaded
-//    LaunchedEffect(Unit) {
-//        photoUrl = sharedPreferences.getString("photo_url", "") ?: ""
-//    }
-//
-//    LaunchedEffect(userId) {
-//        userId?.let {
-//            val document = firestore.collection("users").document(it).get().await()
-//            val fetchedPhotoUrl = document.getString("photoUrl") ?: ""
-//            if (fetchedPhotoUrl.isNotEmpty()) {
-//                photoUrl = fetchedPhotoUrl
-//            }
-//            username = document.getString("name") ?: ""
-//            email = document.getString("email") ?: ""
-//            // Save the photoUrl to SharedPreferences
-//            with(sharedPreferences.edit()) {
-//                putString("photo_url", photoUrl)
-//                apply()
-//            }
-//        }
-//    }
-//
-//    // Launcher untuk membuka file picker
-//    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
-//        if (uri != null) {
-//            selectedImageUri = uri
-//            val photoUriString = uri.toString()
-//            photoUrl = photoUriString
-//
-//            // Save the photoUrl to Firestore and SharedPreferences
-//            userId?.let { id ->
-//                viewModel.updateUserPhotoUrl(id, photoUriString)
-//                with(sharedPreferences.edit()) {
-//                    putString("photo_url", photoUriString)
-//                    apply()
-//                }
-//            }
-//        }
-//    }
-//
-//    Column(
-//        modifier = modifier
-//            .fillMaxSize()
-//            .padding(16.dp),
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//        if (photoUrl.isNotEmpty()) {
-//            Image(
-//                painter = rememberImagePainter(photoUrl),
-//                contentDescription = null,
-//                modifier = Modifier
-//                    .size(100.dp)
-//                    .clip(CircleShape)
-//                    .border(2.dp, Color.Gray, CircleShape)
-//                    .clickable {
-//                        launcher.launch(arrayOf("image/*"))
-//                    }
-//            )
-//        } else {
-//            Image(
-//                painter = painterResource(id = R.drawable.default_profile),
-//                contentDescription = "Default Profile Photo",
-//                modifier = Modifier
-//                    .size(100.dp)
-//                    .clip(CircleShape)
-//                    .border(2.dp, Color.Gray, CircleShape)
-//                    .clickable {
-//                        launcher.launch(arrayOf("image/*"))
-//                    }
-//            )
-//        }
-//
-//        Spacer(modifier = Modifier.height(16.dp))
-//        Text(text = "Username: $username")
-//        Text(text = "Email: $email")
-//        Spacer(modifier = Modifier.height(16.dp))
-//        Button(onClick = {
-//            showLogoutDialog = true
-//        }) {
-//            Text(text = "Logout")
-//        }
-//    }
-//
-//    // Dialog untuk konfirmasi logout
-//    if (showLogoutDialog) {
-//        AlertDialog(
-//            onDismissRequest = { showLogoutDialog = false },
-//            title = { Text("Logout Confirmation") },
-//            text = { Text("Are you sure you want to logout?") },
-//            confirmButton = {
-//                Button(
-//                    onClick = {
-//                        showLogoutDialog = false
-//                        viewModel.signOut(context) {
-//                            // Tambahkan logika navigasi ke halaman login setelah logout
-//                        }
-//                    }
-//                ) {
-//                    Text("Yes")
-//                }
-//            },
-//            dismissButton = {
-//                Button(
-//                    onClick = {
-//                        showLogoutDialog = false
-//                    }
-//                ) {
-//                    Text("No")
-//                }
-//            }
-//        )
-//    }
-//}
-
 

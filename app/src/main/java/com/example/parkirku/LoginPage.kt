@@ -15,11 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,12 +26,7 @@ import androidx.navigation.NavController
 import androidx.compose.runtime.*
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.lifecycle.viewmodel.compose.viewModel
-
-
-import com.google.firebase.auth.FirebaseAuth
-
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -41,7 +34,6 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.composable
 
 @Composable
 fun LoginPage(
@@ -211,129 +203,3 @@ fun LoginPage(
         }
     }
 }
-
-//@Composable
-//fun LoginPage(
-//    modifier: Modifier = Modifier,
-//    viewModel: AuthViewModel = viewModel(),
-//    navController: NavController,
-//    context: Context
-//) {
-//    var email by remember { mutableStateOf("") }
-//    var password by remember { mutableStateOf("") }
-//    val isFormValid by remember {
-//        derivedStateOf { email.isNotBlank() && password.isNotBlank() }
-//    }
-//
-//    var isLoading by remember { mutableStateOf(false) }
-//    var isSuccess by remember { mutableStateOf(false) }
-//
-//    Column(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .padding(16.dp),
-//        verticalArrangement = Arrangement.Center
-//    ) {
-//        TextField(
-//            value = email,
-//            onValueChange = { email = it },
-//            label = { Text("Email") },
-//            modifier = Modifier.fillMaxWidth()
-//        )
-//        Spacer(modifier = Modifier.height(8.dp))
-//        TextField(
-//            value = password,
-//            onValueChange = { password = it },
-//            label = { Text("Password") },
-//            modifier = Modifier.fillMaxWidth(),
-//            visualTransformation = PasswordVisualTransformation()
-//        )
-//        Spacer(modifier = Modifier.height(16.dp))
-//        Button(
-//            onClick = {
-//                isLoading = true
-//                viewModel.signIn(email, password, context = context) { success ->
-//                    isLoading = false
-//                    isSuccess = success
-//                    if (isSuccess) {
-//                        navController.navigate("MainScreen") {
-//                            popUpTo("LoginPage") { inclusive = true }
-//                        }
-//                    }
-//                }
-//            },
-//            enabled = isFormValid,
-//            modifier = Modifier.fillMaxWidth()
-//        ) {
-//            Text("Login")
-//        }
-//        if (isLoading) {
-//            CircularProgressIndicator()
-//        }
-//    }
-//}
-
-//@Composable
-//fun LoginPage(
-//    modifier: Modifier = Modifier,
-//    viewModel: AuthViewModel = viewModel(),
-//    navController: NavController,
-//    context: Context
-//
-//) {
-//
-//    var email by remember { mutableStateOf("") }
-//    var password by remember { mutableStateOf("") }
-//    val isFormValid by remember {
-//        derivedStateOf { email.isNotBlank() && password.isNotBlank() }
-//    }
-//
-//    var isLoading by remember { mutableStateOf(false) }
-//    var isSuccess by remember { mutableStateOf(false) }
-//
-//    Column(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .padding(16.dp),
-//        verticalArrangement = Arrangement.Center
-//    ) {
-//        TextField(
-//            value = email,
-//            onValueChange = { email = it },
-//            label = { Text("Email") },
-//            modifier = Modifier.fillMaxWidth()
-//        )
-//        Spacer(modifier = Modifier.height(8.dp))
-//        TextField(
-//            value = password,
-//            onValueChange = { password = it },
-//            label = { Text("Password") },
-//            modifier = Modifier.fillMaxWidth(),
-//            visualTransformation = PasswordVisualTransformation()
-//        )
-//        Spacer(modifier = Modifier.height(16.dp))
-//        Button(
-//            onClick = {
-//                isLoading = true
-//                viewModel.signIn(email, password, context = context) { success ->
-//                    isLoading = false
-//                    isSuccess = success
-//                }
-//                if (isSuccess) {
-//                    navController.navigate("MainScreen")
-//
-//                }
-//            },
-//            enabled = isFormValid,
-//            modifier = Modifier.fillMaxWidth()
-//        ) {
-//            Text("Login")
-//        }
-//        if (isLoading) {
-//            CircularProgressIndicator()
-//        }
-//    }
-//
-//}
-
-
