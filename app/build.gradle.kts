@@ -53,40 +53,21 @@ android {
 
 dependencies {
 
-    //auth
-    // Import the BoM for the Firebase platform
-    //implementation(platform(libs.firebase.bom))
-    // Declare the dependency for the Firebase Authentication library
-//    implementation(libs.google.firebase.auth.ktx)
-
-    //foto lokal
     implementation(libs.coil.compose.v210)
 
-
-
-
-    //kedua untuk auth
-    // Import the BoM for the Firebase platform
     implementation(platform(libs.firebase.bom.v3200))
 
-
-    //gms
     implementation (libs.play.services.auth.v1920)
 
-    // Firebase Authentication
     implementation(libs.com.google.firebase.firebase.auth.ktx)
 
-    // Optional: Google Sign-In
     implementation(libs.play.services.auth)
 
-
-    //untuk refresh
     implementation (libs.accompanist.swiperefresh.v0249beta)
 
 
     implementation (libs.androidx.material.icons.extended)
 
-    //UNTUK MAINSCREEN
     implementation(libs.material3)
     implementation(libs.androidx.runtime.v105)
     implementation(libs.androidx.ui.v105)

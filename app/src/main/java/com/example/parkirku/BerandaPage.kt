@@ -146,15 +146,12 @@ fun BerandaPage(
                         }
                     }
 
-                    // Update warna parkir berdasarkan kondisi terbaru
                     warnaParkir[idParkir] = if (terisi) Color.Red else Color.Blue
 
-                    // Hitung slot yang terisi
                     if (terisi) {
                         occupiedCount++
                     }
                 }
-                // Hitung slot yang kosong
                 emptySlots = countPlace - occupiedCount
             }
         } catch (e: Exception) {
@@ -165,7 +162,7 @@ fun BerandaPage(
 
     Scaffold(
 
-        topBar = { // Bagian profil pengguna
+        topBar = {
             Column {
                 Row( modifier = Modifier
                     .fillMaxWidth()
